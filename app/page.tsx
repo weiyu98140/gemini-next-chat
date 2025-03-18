@@ -274,6 +274,10 @@ export default function Home() {
           if (chunk.candidates) {
             const candidates: any[] = chunk.candidates
             for (const item of candidates) {
+              if (item.finishReason === 'IMAGE_SAFETY') {
+                return handleError('Unable to generate this type of image', 500)
+              }
+
               if (item.content.parts) {
                 if (thinking) {
                   const textParts = item.content.parts.filter((item: any) => !isUndefined(item.text))
