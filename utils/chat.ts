@@ -98,7 +98,13 @@ export default async function chat({
       messages = [...systemInstructionMessages, ...messages]
     }
   }
-  if (tools && !OldVisionModel.includes(model)) {
+  if (
+    tools &&
+    !OldVisionModel.includes(model) &&
+    !model.includes('lite') &&
+    !model.includes('thinking') &&
+    !model.includes('image')
+  ) {
     const toolPrompt = getFunctionCallPrompt()
     modelParams.tools = tools
     modelParams.systemInstruction = modelParams.systemInstruction

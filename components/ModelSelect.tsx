@@ -1,7 +1,8 @@
-import { useMemo, useCallback, memo } from 'react'
+import { useMemo, useCallback, memo, useLayoutEffect } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useSettingStore, useEnvStore } from '@/store/setting'
 import { useModelStore } from '@/store/model'
+import { fetchModels } from '@/utils/models'
 import { Model } from '@/constant/model'
 import { values, keys, find } from 'lodash-es'
 
@@ -10,10 +11,16 @@ type Props = {
   defaultModel: string
 }
 
+let cachedModelList = false
+
+function filterModel(models: Model[] = []) {
+  return models.filter((model) => model.name.startsWith('models/gemini-'))
+}
+
 function ModelSelect({ className, defaultModel }: Props) {
   const { models } = useModelStore()
   const { update } = useSettingStore()
-  const { modelList: MODEL_LIST } = useEnvStore()
+  const { modelList: MODEL_LIST, isProtected } = useEnvStore()
 
   const modelOptions = useMemo(() => {
     if (models.length > 0) {
@@ -67,6 +74,26 @@ function ModelSelect({ className, defaultModel }: Props) {
     },
     [update, models],
   )
+
+  const uploadModelList = useCallback(() => {
+    const { update: updateModelList } = useModelStore.getState()
+    const { apiKey, apiProxy, password } = useSettingStore.getState()
+    if (apiKey || password || !isProtected) {
+      fetchModels({ apiKey, apiProxy, password }).then((result) => {
+        const models = filterModel(result.models)
+        if (models.length > 0) {
+          updateModelList(models)
+          cachedModelList = true
+        }
+      })
+    }
+  }, [isProtected])
+
+  useLayoutEffect(() => {
+    if (!cachedModelList) {
+      uploadModelList()
+    }
+  }, [uploadModelList])
 
   return (
     <Select

@@ -99,7 +99,7 @@ function MessageItem(props: Props) {
           }
         }
       } else if (role !== 'model' && part.inlineData?.mimeType.startsWith('image/')) {
-        imageList.push(`data:${part.inlineData.mimeType};base64,${part.inlineData.data}`)
+        images.push(`data:${part.inlineData.mimeType};base64,${part.inlineData.data}`)
       }
     })
     return images
@@ -325,17 +325,20 @@ function MessageItem(props: Props) {
               </div>
               {groundingMetadata ? (
                 <>
-                  <ul className="my-2 inline-flex gap-1">
-                    {groundingMetadata.groundingChunks?.map((item, idx) => {
-                      return (
-                        <li className="rounded-full border bg-gray-50 px-4 py-1 dark:bg-gray-950" key={idx}>
-                          <a href={item.web?.uri} target="_blank">
-                            {item.web?.title}
-                          </a>
-                        </li>
-                      )
-                    })}
-                  </ul>
+                  <hr className="my-4" />
+                  {groundingMetadata.groundingChunks?.length > 0 ? (
+                    <ul className="inline-flex flex-wrap gap-2">
+                      {groundingMetadata.groundingChunks?.map((item, idx) => {
+                        return (
+                          <li className="rounded-full border bg-gray-50 px-4 py-1 dark:bg-gray-950" key={idx}>
+                            <a href={item.web?.uri} target="_blank">
+                              {item.web?.title}
+                            </a>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  ) : null}
                   <div
                     className="mx-0.5 my-2"
                     dangerouslySetInnerHTML={{

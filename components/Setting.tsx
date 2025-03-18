@@ -55,8 +55,6 @@ const formSchema = z.object({
   autoStopRecord: z.boolean().default(false),
 })
 
-let cachedModelList = false
-
 function filterModel(models: Model[] = []) {
   return models.filter((model) => model.name.startsWith('models/gemini-'))
 }
@@ -209,17 +207,10 @@ function Setting({ open, hiddenTalkPanel, onClose }: SettingProps) {
         const models = filterModel(result.models)
         if (models.length > 0) {
           updateModelList(models)
-          cachedModelList = true
         }
       })
     }
   }, [isProtected, toast])
-
-  useEffect(() => {
-    if (open && !cachedModelList) {
-      uploadModelList()
-    }
-  }, [open, uploadModelList])
 
   useLayoutEffect(() => {
     if (buildMode === 'export' || !isProtected) {

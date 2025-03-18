@@ -263,7 +263,13 @@ export default function Home() {
         const functionCalls: FunctionCall[][] = []
 
         for await (const chunk of stream) {
-          if (stopGeneratingRef.current) return
+          if (stopGeneratingRef.current) {
+            writer.close()
+            thoughtWriter.close()
+            inlineDataWriter.close()
+            groundingSearchWriter.close()
+            stopGeneratingRef.current = true
+          }
 
           if (chunk.candidates) {
             const candidates: any[] = chunk.candidates
@@ -802,7 +808,7 @@ export default function Home() {
 
   const handleKeyDown = useCallback(
     (ev: KeyboardEvent<HTMLTextAreaElement>) => {
-      if (ev.key === 'Enter' && !ev.shiftKey && !isRecording) {
+      if (ev.key === 'Enter' && ev.shiftKey && !isRecording) {
         if (!checkAccessStatus()) return false
         // Prevent the default carriage return and line feed behavior
         ev.preventDefault()
@@ -872,8 +878,12 @@ export default function Home() {
   )
 
   const handleStopGenerate = useCallback(() => {
+    const { clearReference } = useMessageStore.getState()
     stopGeneratingRef.current = true
     setIsThinking(false)
+    setMessage('')
+    setThinkingMessage('')
+    clearReference()
   }, [])
 
   const genPluginStatusPart = useCallback((plugins: string[]) => {
