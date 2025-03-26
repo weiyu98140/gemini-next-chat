@@ -176,6 +176,17 @@ export default function Home() {
     requestAnimationFrame(() => scrollAreaBottomRef.current?.scrollIntoView({ behavior: 'smooth' }))
   }, [])
 
+  const handleError = useCallback(async (message: string, code?: number) => {
+    const messages = [...messagesRef.current]
+    const lastMessage = messages.pop()
+    if (lastMessage?.role === 'model') {
+      const { revoke } = useMessageStore.getState()
+      revoke(lastMessage.id)
+    }
+    setStatus('silence')
+    setErrorMessage(`${code ?? '400'}: ${message}`)
+  }, [])
+
   const fetchAnswer = useCallback(
     async ({ messages, model, onResponse, onFunctionCall, onError }: AnswerParams) => {
       const { apiKey, apiProxy, password, topP, topK, temperature, maxOutputTokens, safety } =
@@ -337,7 +348,7 @@ export default function Home() {
         }
       }
     },
-    [systemInstruction, isThinkingModel, isLiteModel, talkMode],
+    [systemInstruction, isThinkingModel, isLiteModel, talkMode, handleError],
   )
 
   const summarize = useCallback(
@@ -356,17 +367,6 @@ export default function Home() {
     },
     [fetchAnswer, model],
   )
-
-  const handleError = useCallback(async (message: string, code?: number) => {
-    const messages = [...messagesRef.current]
-    const lastMessage = messages.pop()
-    if (lastMessage?.role === 'model') {
-      const { revoke } = useMessageStore.getState()
-      revoke(lastMessage.id)
-    }
-    setStatus('silence')
-    setErrorMessage(`${code ?? '400'}: ${message}`)
-  }, [])
 
   const handleResponse = useCallback(
     (
