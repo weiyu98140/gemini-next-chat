@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
   try {
     const apiKey = getRandomKey(geminiApiKey)
     const apiBaseUrl = geminiApiBaseUrl || 'https://generativelanguage.googleapis.com'
-    const response = await fetch(`${apiBaseUrl}/v1beta/models?key=${apiKey}`)
+    const response = await fetch(`${apiBaseUrl}/v1beta/models?key=${apiKey}`, { next: { revalidate: 60 } })
     const result = await response.json()
     return NextResponse.json(result)
   } catch (error) {
