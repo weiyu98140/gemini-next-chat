@@ -969,7 +969,7 @@ export default function Home() {
   }, [])
 
   return (
-    <main className="mx-auto flex h-screen max-h-[-webkit-fill-available] w-full max-w-screen-md flex-col justify-between overflow-hidden">
+    <main className="mx-auto flex h-screen max-h-[-webkit-fill-available] w-full max-w-screen-lg flex-col justify-between overflow-hidden max-lg:max-w-screen-md">
       <div className="flex w-full justify-between px-4 pb-2 pr-2 pt-10 max-md:pt-4 max-sm:pr-2 max-sm:pt-4">
         <div className="flex items-center text-red-400">
           <div>
@@ -1013,7 +1013,7 @@ export default function Home() {
       {messages.length === 0 && content === '' && systemInstruction === '' && !systemInstructionEditMode ? (
         <AssistantRecommend />
       ) : (
-        <div className="w-full max-w-screen-md flex-1 overflow-y-auto scroll-smooth">
+        <div className="w-full max-w-screen-lg flex-1 overflow-y-auto scroll-smooth max-lg:max-w-screen-md">
           <div className="flex grow flex-col justify-start">
             {systemInstruction !== '' || systemInstructionEditMode ? (
               <div className="w-full flex-1 px-4 py-2">
@@ -1099,7 +1099,7 @@ export default function Home() {
           </div>
         </div>
       )}
-      <div className="max-w-screen-md bg-background px-4 pb-8 pt-2 max-md:pb-4 max-sm:p-2 max-sm:pb-3">
+      <div className="max-w-screen-lg bg-background px-4 pb-8 pt-2 max-lg:max-w-screen-md max-md:pb-4 max-sm:p-2 max-sm:pb-3">
         <div className="flex w-full items-end gap-2 max-sm:pb-[calc(var(--safe-area-inset-bottom)-16px)]">
           {enablePlugin ? <PluginList /> : null}
           <div
