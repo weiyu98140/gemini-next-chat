@@ -414,7 +414,7 @@ export default function Home() {
             message.parts = [...message.parts, ...imageList]
           }
           if (groundingSearch) message.groundingMetadata = groundingSearch
-          addMessage(message)
+          if (message.parts.length > 0) addMessage(message)
           setMessage('')
           setThinkingMessage('')
           clearReference()
